@@ -1,7 +1,7 @@
 
-# Url Shortener API Rest
+# Url Shortener API
 
-Este proyecto, es una API Rest que permite acortar links largos, utilizando una palabra clave única que lo determina el usuario.
+This project is a Rest API that allows to shorten long links, using a unique keyword (keySite) determined by the user.
 
 
 ## Installation
