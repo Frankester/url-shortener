@@ -10,12 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,8 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "/auth")
@@ -34,39 +28,26 @@ public class AuthController {
     private JdbcUserDetailsManager repoUsers;
 
     @Autowired
+    private AuthenticationManager authManager;
+
+    @Autowired
     private PasswordEncoder encoder;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
     @Autowired
     private JwtUtil jwtUtil;
 
+
+
     @PostMapping("/login")
-    public ResponseEntity<Object> login(@RequestBody LoginRequest loginReq) throws UserPasswordException {
+    public ResponseEntity<Object> login(@RequestBody LoginRequest loginReq){
 
-        // creo el objeto UsernamePasswordAuthenticationToken con las credenciales dadas
-        // y lo guardo en el SecurityContext para que los filtros lo usen
+        Authentication auth = authManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginReq.getUsername(),loginReq.getPassword()));
 
-        UserDetails user = User.withDefaultPasswordEncoder()
-                .username(loginReq.getUsername())
-                .password(loginReq.getPassword())
-                .roles("USER")
-                .build();
-
-
-        Authentication auth = new UsernamePasswordAuthenticationToken(user,null);
-        SecurityContextHolder.getContext().setAuthentication(auth);
-
-
-        if(repoUsers.userExists(loginReq.getUsername())){
-            UserDetails userDb = repoUsers.loadUserByUsername(loginReq.getUsername());
-
-            String pass = userDb.getPassword();
-
-
-            if(!encoder.matches(loginReq.getPassword(), pass)){
-                throw new UserPasswordException("Password incorrect", loginReq.getUsername());
-            }
-        }
 
         String jwt = jwtUtil.createTokenJwt(auth);
 
@@ -81,16 +62,14 @@ public class AuthController {
         }
 
 
-        UserDetails user = User.withDefaultPasswordEncoder()
+        UserDetails user = User.builder()
                 .username(loginReq.getUsername())
-                .password(loginReq.getPassword())
+                .password(passwordEncoder.encode(loginReq.getPassword()))
                 .roles("USER")
                 .build();
 
 
-
         repoUsers.createUser(user);
-
 
 
         return ResponseEntity.ok("User registered succesfully");

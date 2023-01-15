@@ -21,11 +21,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 
-// extrae el username del JWT, y lo busca si existe en la db
-// y crea un UsernamepasswordAuthenticationToken con el userDetail de la db
-// y agrega el UsernamepasswordAuthenticationToken al security context del holder actual
-// de esta forma, el proximo filtro el UsernamePasswordAuthenticationFilter toma este UsernamepasswordAuthenticationToken
-// del security context y se lo pasa al authentication manager para authenticar al usuario
 public class JwtRequestFilter extends OncePerRequestFilter {
 
 
@@ -55,7 +50,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                         user,null,user.getAuthorities()
                 );
 
-                // le agrega otros detalles al objeto en base al request
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -66,8 +60,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 
 
-
-        // ejecuta el siguiente filtro para validar al usuario
         filterChain.doFilter(request, response);
     }
 

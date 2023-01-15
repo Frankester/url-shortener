@@ -8,9 +8,7 @@ import com.example.demo.repositories.URLJPA;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.nio.charset.Charset;
 import java.time.LocalDate;
-import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -19,7 +17,7 @@ public class URLService {
     @Autowired
     private URLJPA repo;
 
-    private String invalidos = ".,*/-{}´()+'¿?\"ñ&%#@!¡°|";
+    private final String invalidos = ".,*/-{}´()+'¿?\"ñ&%#@!¡°| \\";
 
     public URLShort shortUrl(URLLong longUrl) throws KeySiteInUseException, InvalidKeySiteException {
 
@@ -41,12 +39,12 @@ public class URLService {
             }
         }
 
-        //re-write the key to lowerCase
+
         longUrl.setKeySite(key);
 
         this.repo.save(longUrl);
 
-        //create response and return
+
         URLShort shortURl = new URLShort();
 
         shortURl.setUrl(longUrl.getUrl());
