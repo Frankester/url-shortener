@@ -1,0 +1,46 @@
+version: '1.0'
+
+services:
+  mysqldb:
+    image: mysql:8.0
+    environment:
+      - MYSQL_DATABASE=url-shortner
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    networks:
+      - my-app-network
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./src/main/resources/sql/userSql.sql:/docker-entrypoint-initdb.d/userSql.sql
+      - db:/var/lib/mysql
+    restart: always
+
+  app:
+    depends_on:
+      - mysqldb
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: frankester/url-shortner
+    restart: on-failure
+    ports:
+      - "8080:8080"
+    environment:    
+      - SPRING.DATASOURCE.URL=jdbc:mysql://mysqldb:3306/url-shortner
+      - SPRING.DATASOURCE.USERNAME=root
+      - SPRING.DATASOURCE.PASSWORD=
+      - SPRING.JPA.HIBERNATE.SHOW-SQL=true
+      - SPRING.DATASOURCE.DRIVER-CLASS-NAME=com.mysql.jdbc.Driver
+      - SPRING.JPA.HIBERNATE.DDL-AUTO=update
+      - SERVER.ERROR.INCLUDE-MESSAGE=always
+      - APP.JWT.EXPIRATION=86400000
+
+    networks:
+      - my-app-network
+
+
+networks:
+  my-app-network:
+
+volumes:
+  db:

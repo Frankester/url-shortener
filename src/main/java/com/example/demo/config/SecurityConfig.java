@@ -80,12 +80,8 @@ public class SecurityConfig  {
                 .csrf().disable()
                 .authorizeHttpRequests((authorize) ->
                         authorize
-
                                 .requestMatchers(HttpMethod.DELETE).hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.PUT).hasAnyRole("USER","ADMIN")
-                                .requestMatchers(HttpMethod.PATCH).hasAnyRole("USER","ADMIN")
                                 .requestMatchers("/auth/**").permitAll()
-                                .requestMatchers(HttpMethod.POST).hasRole("ADMIN")
                                 .requestMatchers("/urls").hasAnyRole("USER","ADMIN")
                                 .requestMatchers("/urls/**").permitAll()
                                 //.requestMatchers("/swagger-ui/**").permitAll()
