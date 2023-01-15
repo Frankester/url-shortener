@@ -5,6 +5,7 @@ import com.example.demo.exceptions.KeySiteInUseException;
 import com.example.demo.models.URLLong;
 import com.example.demo.models.URLShort;
 import com.example.demo.services.URLService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Role;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.net.URI;
 
 @RepositoryRestController
+@SecurityRequirement(name = "bearerAuth")
 public class URLControllerComplement {
 
     @Autowired

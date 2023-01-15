@@ -3,6 +3,8 @@ package com.example.demo.config;
 import com.example.demo.config.jwt.JwtAuthEntryPoint;
 import com.example.demo.config.jwt.JwtRequestFilter;
 import com.example.demo.config.jwt.JwtUtil;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.apache.catalina.core.ApplicationContext;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +55,11 @@ import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
+@SecurityScheme(
+        type = SecuritySchemeType.HTTP,
+        name="bearerAuth",
+        scheme = "bearer"
+)
 public class SecurityConfig  {
 
     @Autowired

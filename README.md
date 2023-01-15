@@ -15,4 +15,4 @@ Clone this project and run with docker-compose
 
 ## API Reference
 
-To see swagger api reference go to: `http://localhost:8080/swagger-ui/`
+To see swagger api reference go to: `http://localhost:8080/swagger-ui/index.html`
